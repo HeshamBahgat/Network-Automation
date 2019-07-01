@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import getpass
 from telnet_check import Telnet_Connection
