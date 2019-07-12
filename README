@@ -1,6 +1,6 @@
 # firsly add all (routers or switches) IPs in Devices_IPs file
 # run check_connection with pyhton3 check_connection
-# now the check_connection will ping each device before start any action to check rechability
+# now the check_connection will will validate each ip then ping each device  before start any action to check rechability
 # then will try to etablish SSH session first if failed will switch to telnet
 # finally will save the configration file at current directory for check_connection
 
