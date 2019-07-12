@@ -2,6 +2,9 @@ import telnetlib
 import os
 import time, datetime
 
+from colorama import init, deinit, Fore, Style
+
+
 class Telnet_Connection:
     def __init__(self, user, psw, Host):
         self.user = user

@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-import os
-import getpass
+import os, re, getpass, threading
+
+from colorama import init, deinit, Fore, Style
+
+
 from telnet_check import Telnet_Connection
 from ssh_check import SSH_Connection
-import re
+from valid_ip import Validate_IP
 
 username = input("Enter Username: ")
 password = getpass.getpass()
@@ -17,20 +20,6 @@ telnet_host = ""
 with open("Devices_IPs") as IPs:
     Devices_IPs = IPs.read().splitlines()
 
-# check the devices reachabilty and retuen True or false
-def try_ping(Device_IP):
-    # will involk the shell and try to ping
-    response = os.system("ping -c 3 " + Devices_IP)
-    print(f"pinging{Devices_IP}")
-    Device_Status = ""
-    # and then check the response...
-    if response == 0:
-        Device_Status = True
-        print(Devices_IP, " Is Up....")
-    else:
-        Device_Status = False
-        print(Devices_IP, "IS Down!!!")
-    return Device_Status
 
 # check the privilige mode and make sure its always in Privileged mode
 def check_Privilege(previous_text):
@@ -95,11 +84,50 @@ def saving_files(connection_protocol, Devices_IP):
         telnet_host.Savingn_config(Devices_IP)
 
 # this is the main fuction will start from here
-for Devices_IP in Devices_IPs:
-    answer = try_ping(Devices_IP)
-    if answer:
-        connection_protocol = switching_protocols(Devices_IP)
-        saving_files(connection_protocol, Devices_IP)
-        print(connection_protocol)
+def main_func(Devices_IP):
+    host = Validate_IP()
+    if host.host_ip(Devices_IP):
+        answer = host.ping(Devices_IP)
+        if answer:
+            connection_protocol = switching_protocols(Devices_IP)
+            saving_files(connection_protocol, Devices_IP)
+            print(connection_protocol)
+        else:
+            print("Move to another device")
     else:
-        print("Move to another device")
+        print(f"Invalid IP: {Devices_IP}")
+
+#Creating threads
+def create_threads():
+    threads = []
+    for Devices_IP in Devices_IPs:
+        th = threading.Thread(target=main_func, args = (Devices_IP,))
+        th.start()
+        threads.append(th)
+    for th in threads:
+        th.join()
+
+
+#Calling threads creation function
+create_threads()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

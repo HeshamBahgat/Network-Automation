@@ -3,6 +3,9 @@ from netmiko import ConnectHandler
 from netmiko.ssh_exception import NetMikoAuthenticationException, AuthenticationException, NetMikoTimeoutException
 from paramiko.ssh_exception import SSHException, NoValidConnectionsError
 
+from colorama import init, deinit, Fore, Style
+
+
 class SSH_Connection():
     def __init__(self, user, psw, Host):
         self.user = user
